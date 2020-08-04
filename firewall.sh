@@ -19,19 +19,12 @@ case $1 in
 		#Libera SSH
 		iptables -A INPUT -p tcp --syn --dport 19842 -s 10.10.1.0/24 -j ACCEPT
 		
-		iptables -A INPUT -i enp0s3 -m state --state NEW -p udp --dport 5050 -j ACCEPT
+		iptables -A INPUT -i eth0 -m state --state NEW -p udp -m multiport --dport 5050, 5858  -j ACCEPT
 		iptables -A INPUT -p icmp -j ACCEPT	
 
 
-		#Saida no Firewall
-		iptables -A OUTPUT -m state --state ESTABLISHED,RELATED -j ACCEPT
-		iptables -A OUTPUT -p tcp --syn -m multiport --dports 80,443 -j ACCEPT
-		iptables -A OUTPUT -p udp --dport 53 -d 8.8.8.8 --sport 1024:65535 -j ACCEPT
-        	iptables -A OUTPUT -p icmp -j ACCEPT
-
-
         	#Compartilhando Internet
-        	iptables -t nat  -A POSTROUTING -o enp0s3 -s 10.10.1.0/24 -j MASQUERADE
+        	iptables -t nat  -A POSTROUTING -o eth0 -s 10.10.1.0/24 -j MASQUERADE
 		sed -i 's/#net.ipv4.ip_forward=1/net.ipv4.ip_forward=1/g' /etc/sysctl.conf
 		sysctl -p
 
@@ -39,7 +32,7 @@ case $1 in
 		#Entrada e Saida da Rede Interna
         	iptables -A FORWARD -m state --state ESTABLISHED,RELATED -j ACCEPT
 		iptables -A FORWARD -p tcp --syn -m multiport --dports 80,443,465,587,993,995,3050,3306,5222,7777,19842 -s 10.10.1.0/24 -j ACCEPT
-		iptables -A FORWARD -p udp --dport 53 -s 10.10.1.0/24 -j ACCEPT	
+		iptables -A FORWARD -p udp --dport 53 -s 10.10.1.0/24 -j ACCEPT
 		iptables -A FORWARD -i tap0 -j ACCEPT
 		iptables -A FORWARD -p icmp -s 10.10.1.0/24 -j ACCEPT
 
