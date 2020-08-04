@@ -7,7 +7,7 @@ case $1 in
 		iptables -F -t nat
 		iptables -F -t mangle
 		iptables -P INPUT DROP
-		iptables -P OUTPUT DROP
+		iptables -P OUTPUT ACCEPT
 		iptables -P FORWARD DROP
         	iptables -Z
 
@@ -34,7 +34,7 @@ case $1 in
         
 		#Entrada e Saida da Rede Interna
         	iptables -A FORWARD -m state --state ESTABLISHED,RELATED -j ACCEPT
-		iptables -A FORWARD -p tcp --syn -m multiport --dports 22,80,443 -s 10.10.1.0/24 -j ACCEPT
+		iptables -A FORWARD -p tcp --syn -m multiport --dports 22,80,443, 3306 -s 10.10.1.0/24 -j ACCEPT
 		iptables -A FORWARD -p udp --dport 53 -s 10.10.1.0/24 -j ACCEPT	
 		iptables -A FORWARD -i tap0 -j ACCEPT
 		iptables -A FORWARD -p icmp -j ACCEPT
