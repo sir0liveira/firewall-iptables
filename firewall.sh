@@ -19,7 +19,7 @@ case $1 in
 		#Libera SSH
 		iptables -A INPUT -p tcp --syn --dport 19842 -s 10.10.1.0/24 -j ACCEPT
 		
-		iptables -A INPUT -i eth0 -m state --state NEW -p udp -m multiport --dport 5050, 5858  -j ACCEPT
+		iptables -A INPUT -i eth0 -m state --state NEW -p udp -m multiport --dports 5050,5858  -j ACCEPT
 		iptables -A INPUT -p icmp -j ACCEPT	
 
 
@@ -38,7 +38,7 @@ case $1 in
 
 		
 		#Nat para o server VPN
-		iptables -t nat -A PREROUTING -p udp --destination-port 5050 -j DNAT --to 10.10.1.254
+		iptables -t nat -A PREROUTING -p udp -m multiport --dports 5050,5858 -j DNAT --to 10.10.1.254:5050,5858
 	
 	;;
 	stop)
