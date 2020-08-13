@@ -49,7 +49,7 @@ case $1 in
 		iptables -P INPUT ACCEPT
 		iptables -P OUTPUT ACCEPT
 		iptables -P FORWARD ACCEPT
-        iptables -Z
+        	iptables -Z
 
 		
 		#Desabilitar Compartilhamento de Internet
